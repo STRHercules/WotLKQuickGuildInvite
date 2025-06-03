@@ -32,6 +32,10 @@ end
 local function SendRecruitWhisper(name)
     local message = GuildQuickInviteActiveMessage
     if not message or message == "" then
+        -- Fallback to the simple slash command message
+        message = GuildQuickInviteRecruitMsg
+    end
+    if not message or message == "" then
         print(
             "|cffff0000[GQI]|r No recruitment message set. Use /gqi <message> to set one.")
         return
@@ -76,17 +80,6 @@ end
 hooksecurefunc("UnitPopup_ShowMenu", function(dropdownMenu, which, unit)
     AddGuildInviteOption(unit)
 end)
-
-local function SendRecruitWhisper(name)
-    local message = GuildQuickInviteRecruitMsg
-    if not message or message == "" then
-        print(
-            "|cffff0000[GQI]|r No recruitment message set. Use /gqi <message> to set one.")
-        return
-    end
-    SendChatMessage(message, "WHISPER", nil, name)
-    print("|cffffff00[GQI]|r Whisper sent to " .. name)
-end
 
 -- Create a frame to catch events
 local f = CreateFrame("Frame")
