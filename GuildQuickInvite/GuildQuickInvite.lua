@@ -56,24 +56,6 @@ if not C_Timer then
     end
 end
 
-function BuildGuildRosterSnapshot()
-    local totalMembers = GetNumGuildMembers()
-    for i = 1, totalMembers do
-        local name, _, _, _, _, _, _, _, online = GetGuildRosterInfo(i)
-        name = Ambiguate(name or "", "none")
-
-        -- Check if they already exist in persistent storage
-        if not GuildQuickInviteKnownGuildies[name] then
-            GuildQuickInviteKnownGuildies[name] = true -- add to known
-            -- Only welcome if online at time of detection
-            if online and GuildQuickInvite_AutoWelcomeEnabled then
-                SendChatMessage(
-                    "Welcome to <" .. GetGuildInfo("player") .. "> " .. name ..
-                        "!", "GUILD")
-            end
-        end
-    end
-end
 
 -- Slash command to toggle timestamp format
 SLASH_GQITIME1 = "/gqitime"
@@ -86,14 +68,6 @@ SlashCmdList["GQITIME"] = function()
     end
 end
 
--- Slash command to toggle it
-SLASH_GQIAUTOWELCOME1 = "/gqiautowelcome"
-SlashCmdList["GQIAUTOWELCOME"] = function()
-    GuildQuickInviteAutoWelcome = not GuildQuickInviteAutoWelcome
-    local status = GuildQuickInviteAutoWelcome and "|cff00ff00ENABLED|r" or
-                       "|cffff0000DISABLED|r"
-    print("|cffffff00[GQI]|r Auto Welcome Message is now " .. status)
-end
 
 -- Update function to mark if joined
 local function MarkPlayerJoined(name)
@@ -618,8 +592,6 @@ f:SetScript("OnEvent", function(self, event, addonName)
         GuildQuickInviteRecruitMsg = GuildQuickInviteRecruitMsg or ""
         recruitCooldownDB = GuildQuickInviteRecruitDB or {}
         GuildQuickInviteMacroChannel = GuildQuickInviteMacroChannel or "/2"
-        GuildQuickInviteAutoWelcome = GuildQuickInviteAutoWelcome ~= false
-        GuildQuickInviteKnownGuildies = GuildQuickInviteKnownGuildies or {}
         CleanExpiredInvites()
         CleanRecruitCooldowns()
         GQI_HistoryDB = GQI_HistoryDB or {}
@@ -984,89 +956,3 @@ local sf = CreateFrame("Frame")
 sf:RegisterEvent("PLAYER_LOGOUT")
 sf:RegisterEvent("PLAYER_LEAVING_WORLD")
 sf:SetScript("OnEvent", function() GQI_HistoryDB = gqiInviteHistory end)
-
--- Create a frame for welcome logic
-local welcomeFrame = CreateFrame("Frame")
-welcomeFrame:RegisterEvent("GUILD_ROSTER_UPDATE")
-welcomeFrame:RegisterEvent("PLAYER_LOGIN")
-print("|cffffff00[GQI]|r Auto Welcome Message is currently " ..
-          (GuildQuickInviteAutoWelcome and "|cff00ff00ENABLED|r" or
-              "|cffff0000DISABLED|r"))
-
--- Track already welcomed players
-local knownGuildMembers = {}
-local initialized = false
-
--- Build the current guild roster snapshot
-local function GetGuildRosterSnapshot()
-    local snapshot = {}
-    for i = 1, GetNumGuildMembers() do
-        local name = GetGuildRosterInfo(i)
-        if name then snapshot[name] = true end
-    end
-    return snapshot
-end
-
--- Check for newly joined members
-local lastCheck = 0
-local CHECK_COOLDOWN = 10 -- seconds
-
-local function CheckNewGuildMembers()
-    if not GuildQuickInviteAutoWelcome or not initialized then return end
-    if time() - lastCheck < CHECK_COOLDOWN then return end
-    lastCheck = time()
-
-    local current = GetGuildRosterSnapshot()
-    for name in pairs(current) do
-        if not GuildQuickInviteKnownGuildies[name] then
-            GuildQuickInviteKnownGuildies[name] = true
-            SendChatMessage(
-                "Welcome to the guild, " .. Ambiguate(name, "short") .. "!",
-                "GUILD")
-        end
-    end
-
-end
-
--- Handle events
-welcomeFrame:SetScript("OnEvent", function(self, event)
-    if event == "PLAYER_LOGIN" then
-        if IsInGuild() then
-            C_Timer.After(5, function()
-                GuildRoster()
-                knownGuildMembers = GetGuildRosterSnapshot()
-            end)
-
-        end
-    elseif event == "GUILD_ROSTER_UPDATE" then
-        if initialized then CheckNewGuildMembers() end
-    end
-end)
-
-local function RunAfterDelay(delay, func)
-    local f = CreateFrame("Frame")
-    local elapsed = 0
-    f:SetScript("OnUpdate", function(self, delta)
-        elapsed = elapsed + delta
-        if elapsed >= delay then
-            self:SetScript("OnUpdate", nil)
-            func()
-        end
-    end)
-end
-
--- Initialize snapshot at load
-RunAfterDelay(5, function()
-    GuildRoster()
-    knownGuildMembers = GetGuildRosterSnapshot()
-    initialized = true
-end)
-
-local frame = CreateFrame("Frame")
-frame:RegisterEvent("PLAYER_LOGIN")
-frame:SetScript("OnEvent", function()
-    C_Timer.After(5, function()
-        GuildRoster()
-        BuildGuildRosterSnapshot()
-    end)
-end)
