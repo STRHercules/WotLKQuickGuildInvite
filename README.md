@@ -1,93 +1,74 @@
-# 📬 GuildQuickInvite (WotLK 3.3.5 Addon)
+# GuildQuickInvite
 
-GuildQuickInvite is a streamlined **recruitment addon for World of Warcraft 3.3.5 (Wrath of the Lich King)** that helps you easily manage guild invites, automate whispers, and organize recruitment messages—all through a slick UI with **ElvUI skin support**.
-
----
-
-## ✨ Features
-
-- ✅ **Right-click guild invite** and recruitment whisper from unit frames and the chat.
-- 🧠 **Invite cooldown tracking** to prevent spam (default: 6 hours).
-- 💬 **Custom recruitment messages** 
-- 🖱️ **Graphical Message Manager UI**:
-  - Save, delete, and set active messages
-  - Clear all saved messages at once
-- 🎨 **ElvUI integration** (if detected):
-  - Transparent frame styling
-  - Buttons, edit box, and dropdown skinned to match ElvUI
-- 🎭 **Fade-out effect** when the GUI loses focus
+A streamlined guild recruitment addon for **World of Warcraft 3.3.5**.
 
 ---
 
-## 🔧 Installation
+## Features
 
-1. Download or clone the repository.
-2. Place the `GuildQuickInvite` folder in your `Interface/AddOns` directory.
-3. Restart WoW or reload your UI with `/reload`.
-
----
-
-## 💬 Slash Commands
-
-- `/gqi <message>`  
-  Sets your default recruitment whisper message.
-
-- `/gqi`  
-  Prints your currently set recruitment message.
-
-- `/gqimsg`  
-  Opens the recruitment message manager UI.
+- **Right-click invites** and recruitment whispers from unit frames and chat.
+- **Cooldown tracking** for invites and whispers to prevent spam.
+- **Recruitment Message Manager** with save, delete, clear, and active message selection.
+- **Macro generation** for the active recruitment message.
+- **Invite history UI** with join/decline tracking and sortable columns.
+- **12/24 hour timestamp toggle** for the history window.
+- **Optional tooltip cooldown display**.
+- **ElvUI skin support** when ElvUI is loaded.
+- **Smooth fade-out** of the message manager when unfocused.
 
 ---
 
-## 🖱️ Context Menu Integration
+## Installation
 
-Right-click a player's unitframe or name in chat to:
-
-- **Invite to Guild** (respects cooldowns)
-- **Recruit** with your active message
-
----
-
-## ⚙️ Saved Variables
-
-The addon uses the following SavedVariables:
-
-- `GuildQuickInviteDB` — Tracks player invite cooldowns
-- `GuildQuickInviteMessages` — List of saved recruitment messages
-- `GuildQuickInviteActiveMessage` — Currently selected message
-- `GuildQuickInviteRecruitMsg` — Fallback whisper message from `/gqi`
+1. Download or clone this repository.
+2. Copy the `GuildQuickInvite` folder to your `Interface/AddOns` directory.
+3. Restart the game or run `/reload`.
 
 ---
 
-## 🎨 ElvUI Skin Support
+## Slash Commands
 
-If ElvUI is loaded, the addon will automatically:
-
-- Apply the `Transparent` frame template
-- Skin frame, and buttons, using ElvUI's skinning module
-
-No configuration needed — just have ElvUI enabled!
-
----
-
-## 🧪 Compatibility
-
-- ✅ World of Warcraft 3.3.5 (Wrath of the Lich King)
-- ✅ ElvUI (WotLK backport version)
+- `/gqi <message>` – set your default recruitment whisper.
+- `/gqi` – print the current recruitment message.
+- `/gqimsg` – open the recruitment message manager UI.
+- `/gqihistory` – show invite history.
+- `/gqisummary` – print a summary of invites.
+- `/gqiclearhistory` – clear the invite history list.
+- `/gqireset` – reset cooldown data.
+- `/gqicooldown <minutes>` – change invite and whisper cooldowns.
+- `/gqitooltip` – toggle tooltip cooldown information.
+- `/gqitime` – switch between 12‑hour and 24‑hour timestamps.
+- `/gqichannel <channel>` – set the chat channel for macro messages.
 
 ---
 
-## 📌 To-Do / Ideas
+## Context Menu Integration
 
-- [ ] Global vs. character message profiles toggle
-- [ ] Export/import message templates
-- [ ] Sound cue or visual indicator when someone joins
-- [ ] Welcome message toggle per invite
+Right‑click a player's name or unit frame to send a guild invite or your active recruitment whisper. Options automatically respect cooldowns.
 
 ---
 
-## 🧑‍💻 Authors
+## Saved Variables
 
-**Zach** (concept, UI design)  
-**ChatGPT** (scripting assistant & code wrangler)
+- `GuildQuickInviteDB` – invite cooldowns.
+- `GuildQuickInviteMessages` – stored recruitment messages.
+- `GuildQuickInviteActiveMessage` – currently selected message.
+- `GuildQuickInviteRecruitMsg` – fallback whisper text.
+- `GuildQuickInviteRecruitDB` – whisper cooldowns.
+- `GQI_HistoryDB` – invite history.
+
+---
+
+## Compatibility
+
+- World of Warcraft 3.3.5 (Wrath of the Lich King)
+- ElvUI backport (optional)
+
+---
+
+## Authors
+
+**Zach** – concept and UI design  
+**ChatGPT** – scripting assistance
+
+
